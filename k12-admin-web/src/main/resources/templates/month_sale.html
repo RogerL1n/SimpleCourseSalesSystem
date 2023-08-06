@@ -1,0 +1,72 @@
+<div id="main" style="width: 1500px;height:700px;"></div>
+<script type="text/javascript" th:inline="none">
+$(function () {
+    $.ajax({
+        url:"auth/data.html?act=month",
+        success:function(data){
+            var app = echarts.init(document.getElementById('main'));
+            var source=new Array();
+            var names=['month','1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月']
+            source.push(names)
+            var series=new Array();
+            $.each(data,function(name,value) {
+                var arr=new Array();
+                arr.push(name);
+                arr=arr.concat(value);
+                source.push(arr);
+                series.push({type: 'bar', smooth: true, seriesLayoutBy: 'row'})
+            });
+
+            console.log(source)
+            series.push({
+                type: 'pie',
+                id: 'pie',
+                radius: '30%',
+                center: ['50%', '25%'],
+                label: {
+                    formatter: '{b}: {@1月} ({d}%)'
+                },
+                encode: {
+                    itemName: 'month',
+                    value: '1月',
+                    tooltip: '1月'
+                }
+            })
+            var option = {
+                legend: {},
+                tooltip: {
+                    trigger: 'axis',
+                    showContent: false
+                },
+                dataset: {
+                    source: source
+                },
+                xAxis: {type: 'category'},
+                yAxis: {gridIndex: 0},
+                grid: {top: '55%'},
+                series: series
+            };
+
+            app.on('updateAxisPointer', function (event) {
+                var xAxisInfo = event.axesInfo[0];
+                if (xAxisInfo) {
+                    var dimension = xAxisInfo.value + 1;
+                    app.setOption({
+                        series: {
+                            id: 'pie',
+                            label: {
+                                formatter: '{b}: {@[' + dimension + ']} ({d}%)'
+                            },
+                            encode: {
+                                value: dimension,
+                                tooltip: dimension
+                            }
+                        }
+                    });
+                }
+            });
+            app.setOption(option);
+        }
+    })
+})
+</script>

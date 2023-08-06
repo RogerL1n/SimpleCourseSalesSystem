@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <div th:replace="common-css"></div>
+</head>
+<body>
+<div th:replace="common-top"></div>
+<div class="container layout layout-margin-top">
+    <div class="row">
+        <div class="col-md-9 layout-body">
+            <div class="content">
+                <div class="row course-cates">
+                    <div class="col-md-1 course-cates-title">年级：</div>
+                    <div class="col-md-11 course-cates-content">
+                        <a th:class="${param.gradeId==null or param.gradeId[0]==''?'active':''}"
+                           th:href="@{course.html?subjectId={subjectId}(subjectId=${param.subjectId})}">全部</a>
+                        <a th:each="grade:${gradeList}"
+                           th:href="@{course.html?gradeId={gradeId}&subjectId={subjectId}(gradeId=${grade.id},subjectId=${param.subjectId})}"
+                           th:text="${grade.name}"
+                           th:class="${param.gradeId!=null and param.gradeId[0]==grade.id+''?'active':''}"></a>
+                    </div>
+                </div>
+                <div class="row course-cates">
+                    <div class="col-md-1 course-cates-title">科目：</div>
+                    <div class="col-md-11 course-cates-content">
+                        <a th:class="${param.subjectId==null or param.subjectId[0]==''?'active':''}"
+                           th:href="@{course.html?gradeId={gradeId}(gradeId=${param.gradeId})}">全部</a>
+                        <a th:each="subject:${subjectList}"
+                           th:href="@{course.html?gradeId={gradeId}&subjectId={subjectId}(gradeId=${param.gradeId},subjectId=${subject.id})}"
+                           th:text="${subject.name}"
+                           th:class="${param.subjectId!=null and param.subjectId[0]==subject.id+''?'active':''}"></a>
+                    </div>
+                </div>
+            </div>
+            <div class="content position-relative">
+                <ul class="nav nav-tabs" role="tablist">
+                    <li class="active"><a href="/courses/?course_type=all&amp;tag=all&amp;fee=all">课程列表</a></li>
+                </ul>
+                <div class="clearfix"></div>
+                <div class="search-result"></div>
+                <div class="row">
+                    <div class="col-md-4 col-sm-6  course" th:each="course:${pageInfo.list}">
+                        <a class="course-box" th:href="'detail.html?id='+${course.id}">
+                            <div class="course-img">
+                                <img src="static/img/602923f18022b.png">
+                            </div>
+                            <div class="course-body">
+                                <span class="course-title" data-toggle="tooltip"
+                                      data-placement="bottom" th:text="${course.name}"></span>
+                            </div>
+                            <div class="course-footer">
+			                    <span class="course-per-num pull-left">
+                                    <i class="fa fa-users"></i><span th:text="${course.surplus}"></span>
+			                    </span>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <nav class="pagination-container">
+                    <ul class="pagination">
+                        <li class="disabled">
+                            <a th:href="@{course.html?gradeId={gradeId}&subjectId={subjectId}&pageNum={pn}(gradeId=${param.gradeId},subjectId=${param.subjectId},pn=${pageInfo.prePage})}" aria-label="Previous">
+                                <span aria-hidden="true">上一页</span>
+                            </a>
+                        </li>
+                        <li th:each="pn:${pageInfo.navigatepageNums}" th:class="${param.pageNum!=null and param.pageNum[0]==pn+''?'active':''}">
+                            <a th:href="@{course.html?gradeId={gradeId}&subjectId={subjectId}(gradeId=${param.gradeId},subjectId=${param.subjectId})}" th:text="${pn}"></a>
+                        </li>
+                        <li class="">
+                            <a aria-label="Next" th:href="@{course.html?gradeId={gradeId}&subjectId={subjectId}&pageNum={pn}(gradeId=${param.gradeId},subjectId=${param.subjectId},pn=${pageInfo.nextPage})}">
+                                <span aria-hidden="true">下一页</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+
+
+            </div>
+
+        </div>
+        <div class="col-md-3 layout-side">
+            <div class="panel panel-default panel-userinfo">
+                <div class="panel-body body-userinfo">
+                    <div class="media userinfo-header">
+                        <div class="media-left">
+                            <div class="user-avatar">
+
+                                <a class="avatar" href="#sign-modal" data-toggle="modal" data-sign="signin">
+                                    <img class="circle" src="../static/img/logo-grey.png">
+                                </a>
+
+                            </div>
+                        </div>
+                        <div class="media-body">
+
+                            <span class="media-heading username">欢迎来到实验楼</span>
+                            <p class="vip-remain">做实验，学编程</p>
+
+                        </div>
+                    </div>
+
+                    <div class="row userinfo-data">
+
+                        <hr>
+                        <div class="btn-group-lr">
+                            <a href="#sign-modal" type="button" class="btn btn-success col-md-5 col-xs-6 login-btn"
+                               data-toggle="modal" data-sign="signin">登录</a>
+                            <a href="#sign-modal" type="button"
+                               class="btn btn-success col-md-5 col-xs-6 col-md-offset-1 register-btn"
+                               data-toggle="modal" data-sign="signup">注册</a>
+                        </div>
+
+                    </div>
+
+                    <div class="userinfo-footer row">
+                        <div class="col-md-6 col-xs-6 pos-left">
+
+                            <a href="#sign-modal" data-toggle="modal" data-sign="signin"><span
+                                    class="glyphicon glyphicon-bookmark"></span> 加入私有课</a>
+
+                        </div>
+                        <div class="col-md-6 col-xs-6 pos-right">
+                            <a href="/contribute" target="_blank"><span class="glyphicon glyphicon-send"></span>
+                                我要投稿</a>
+                        </div>
+
+                        <div id="join-private-course" class="modal fade words-ctrl" tabindex="-1" role="dialog">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h4 class="modal-title">加入私有课</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div style="margin:15px 0; font:16px;">输入教师提供的私有课程码可以加入教师的私有课程。</div>
+                                        <form id="private-course-form" method="POST" action="/courses/join">
+                                            <div class="form-group">
+                                                <label for="code">邀请码</label>
+                                                <input class="form-control" id="code" name="code" type="text" value="">
+                                                <input name="_csrf_token" type=hidden
+                                                       value="1483780974##87f89328c5616669f00302a263fe9061bb852818">
+                                            </div>
+                                        </form>
+
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                                        <button type="button" class="btn btn-primary"
+                                                onclick="document.getElementById('private-course-form').submit();">确定
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:replace="common-footer"></div>
+</body>
+</html>

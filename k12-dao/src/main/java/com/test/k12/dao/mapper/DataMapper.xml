@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.test.k12.dao.DataDAO">
+
+    <select id="getSubjectSaleCount" resultType="SubjectSaleCount">
+        SELECT count(subject_id) `count`,s.name
+        FROM course_sale c INNER JOIN subject s ON s.id = c.subject_id
+        GROUP BY subject_id
+    </select>
+
+    <select id="getSubjectSaleMonthCount" resultType="SubjectSaleCount">
+        select count(subject_id) `count`,s.name,month(created_time) `month`
+        from course_sale c inner join subject s on s.id=c.subject_id
+        group by subject_id,month(created_time)
+    </select>
+
+
+</mapper>
+    

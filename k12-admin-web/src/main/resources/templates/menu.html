@@ -1,0 +1,119 @@
+<button class="layui-btn layui-btn-sm" id="menu-add-btn"><i class="layui-icon">&#xe654;</i>添加</button>
+<button class="layui-btn layui-btn-sm layui-btn-danger" id="menu-del-btn"><i class="layui-icon">&#xe640;</i>删除</button>
+<ul id="menu-tree">
+</ul>
+<script>
+layui.use(['layer', 'form'], function () {
+    var form = layui.form
+    //easyui渲染
+    $("#menu-tree").tree({
+        url: "auth/menu.html?act=tree",
+        checkbox: true,//复选框
+        cascadeCheck:false,//级联
+        onClick: function (node) {//点击菜单节点  node被点击的节点
+            $.ajax({
+                url: "auth/menu.html?act=go_edit&id="+node.id,
+                success: function (menu) {
+                    openEditLayer(menu)
+                }
+            })
+        }
+    })
+    $("#menu-add-btn").click(function () {
+        openEditLayer(null)//打开layer,添加不需要回填表单
+    })
+
+    $("#menu-del-btn").click(function(){
+        //获取树中被选中的节点
+        var nodes=$("#menu-tree").tree("getChecked")
+        if(nodes.length>0){//选中了某些节点
+            layer.confirm('确认要删除吗？', {
+                btn: ['是','否'] //按钮
+            }, function(index){
+                var ids=""
+                $.each(nodes,function(i,obj){//把所有被选中的节点id拼接成字符串
+                    ids+="&ids="+obj.id
+                })
+                $.ajax({
+                    url: "auth/menu.html?act=delete",
+                    data: ids,
+                    method: "post",
+                    success: function (result) {
+                        if (result.status) {
+                            $("#menu-tree").tree("reload")//重新加载树
+                            layer.close(index);
+                        } else {
+                            layer.msg(result.message)
+                        }
+                    }
+                })
+            })
+        }
+    })
+    function openEditLayer(data) {
+        layer.open({
+            type: 1,
+            content: $('#edit-layer').html() //这里content是一个DOM，注意：最好该元素要存放在body最外层，否则可能被其它的相对元素所影响
+            , area: ['400px', '500px']
+            , title: "编辑信息"
+            , zIndex: 1000
+            , btn: ['提交', '取消']
+            , success: function (layero, index) {
+                form.render()
+                form.val("menu-edit-form",data)
+                //easyui渲染下拉树
+                $('#parentId').combotree({
+                    url: 'auth/menu.html?act=tree'
+                });
+            }
+            , yes: function (index, layero) {
+                //按钮【按钮一】的回调
+                $.ajax({
+                    url: "auth/menu.html?act=edit",
+                    data: form.val("menu-edit-form"),
+                    method: "post",
+                    success: function (result) {
+                        if (result.status) {
+                            $("#menu-tree").tree("reload")//重新加载树
+                            layer.close(index);
+                        } else {
+                            layer.msg(result.message)
+                        }
+                    }
+                })
+            }
+            , btn2: function (index, layero) {
+                //按钮【按钮二】的回调
+                layer.close(index);
+            }
+        })
+    }
+})
+</script>
+
+<script type="text/html" id="edit-layer">
+<form class="layui-form" lay-filter="menu-edit-form" style="width: 80%;white-space:nowrap!important;">
+    <input type="hidden" name="id">
+    <div class="layui-form-item">
+        <label class="layui-form-label">菜单名称</label>
+        <div class="layui-input-block">
+            <input type="text" name="text" required lay-verify="required" placeholder="请输入菜单名" autocomplete="off"
+                   class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">父菜单</label>
+        <div class="layui-input-block">
+            <!--父菜单使用easyui-->
+            <input type="text" name="parentId" id="parentId">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">URL</label>
+        <div class="layui-input-block">
+            <input type="text" name="url" placeholder="请输入url" autocomplete="off"
+                   class="layui-input">
+        </div>
+    </div>
+</form>
+</script>

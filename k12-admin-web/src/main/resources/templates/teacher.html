@@ -1,0 +1,96 @@
+<script type="text/html" id="teacher-head-bar">
+    <div class="layui-btn-container">
+        <button class="layui-btn layui-btn-sm" lay-event="goEdit"><i class="layui-icon">&#xe654;</i>添加</button>
+    </div>
+</script>
+<script type="text/html" id="teacher-teacher-bar">
+    <a class="layui-btn layui-btn-xs" lay-event="edit-teacher">编辑</a>
+</script>
+<table class="layui-table" lay-filter="teacher-table" id="teacher-table">
+</table>
+<script type="text/javascript" th:inline="none">
+    layui.use(['table', 'layer', 'form'], function () {
+        var table = layui.table;
+        var layer = layui.layer;
+        var form = layui.form;
+        table.render({
+            id: "teacher-table",
+            elem: '#teacher-table'
+            , toolbar: '#teacher-head-bar'
+            , cellMinWidth: 80
+            , url: 'auth/teacher.html?act=table' //数据接口
+            , page: true //开启分页
+            , cols: [[
+                {field: 'id', title: 'ID', sort: true, fixed: 'left'}
+                , {field: 'name', title: '姓名'}
+               , {fixed: 'right', title: '操作', toolbar: '#teacher-teacher-bar'}
+            ]]
+        });
+        //头工具栏事件
+        table.on('toolbar(teacher-table)', function (obj) {
+            switch (obj.event) {
+                case 'goEdit':
+                    openEditWindow(null);
+                    break;
+            }
+            ;
+        });
+        //监听行工具事件
+        table.on('tool(teacher-table)', function (obj) {
+            var data = obj.data;
+            switch (obj.event) {
+                case 'edit-teacher': {
+                    layui.use('form', function () {
+                        openEditWindow(data);
+
+                    })
+                    break;
+                }
+            }
+        });
+
+        function openEditWindow(data) {
+            layer.open({
+                type: 1,
+                content: $('#teacher-edit-layer').html(),
+                title: '编辑老师'
+                , area: ['400px', '300px'],
+                btn: ['提交', '取消'] //可以无限个按钮
+                , success: function (layero, index) {
+                    form.render()
+                    form.val("teacher-edit-form", data)
+                }
+                , yes: function (index, layero) {
+                    $.ajax({
+                        url: 'auth/teacher.html?act=edit',
+                        data: $("#teacher-edit-form").serialize(),
+                        method: 'post',
+                        success: function (result) {
+                            if (result.status) {
+                                table.reload('teacher-table', {});
+                                layer.close(index);
+                            } else {
+                                alert(result.message)
+                            }
+                        }
+                    })
+                }
+            });
+        }
+
+    });
+
+</script>
+
+<script type="text/html" id="teacher-edit-layer">
+    <form id="teacher-edit-form" style="width: 80%;white-space:nowrap!important;" class="layui-form" lay-filter="teacher-edit-form">
+        <input type="hidden" name="id">
+        <div class="layui-form-item">
+            <label class="layui-form-label">老师</label>
+            <div class="layui-input-block">
+                <input type="text" name="name" required lay-verify="required" placeholder="请输入老师名" autocomplete="off"
+                       class="layui-input">
+            </div>
+        </div>
+    </form>
+</script>

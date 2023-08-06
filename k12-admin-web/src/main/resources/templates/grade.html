@@ -1,0 +1,115 @@
+<script type="text/html" id="grade-head-bar">
+    <div class="layui-btn-container">
+        <button class="layui-btn layui-btn-sm" lay-event="goEdit"><i class="layui-icon">&#xe654;</i>添加</button>
+    </div>
+</script>
+<script type="text/html" id="grade-grade-bar">
+    <a class="layui-btn layui-btn-xs" lay-event="edit-grade">编辑</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="delete-grade">删除</a>
+</script>
+<table class="layui-table" lay-filter="grade-table" id="grade-table">
+</table>
+<script type="text/javascript" th:inline="none">
+    layui.use(['table', 'layer', 'form'], function () {
+        var table = layui.table;
+        var layer = layui.layer;
+        var form = layui.form;
+        table.render({
+            id: "grade-table",
+            elem: '#grade-table'
+            , toolbar: '#grade-head-bar'
+            , cellMinWidth: 80
+            , url: 'auth/grade.html?act=table' //数据接口
+            , page: true //开启分页
+            , cols: [[
+                {field: 'id', title: 'ID', sort: true, fixed: 'left'}
+                , {field: 'name', title: '年级'}
+               , {fixed: 'right', title: '操作', toolbar: '#grade-grade-bar'}
+            ]]
+        });
+        //头工具栏事件
+        table.on('toolbar(grade-table)', function (obj) {
+            switch (obj.event) {
+                case 'goEdit':
+                    openEditWindow();
+                    break;
+            }
+            ;
+        });
+        //监听行工具事件
+        table.on('tool(grade-table)', function (obj) {
+            var data = obj.data;
+            switch (obj.event) {
+                case 'edit-grade': {
+                    layui.use('form', function () {
+                        openEditWindow();
+                    })
+                    break;
+                }
+                case 'delete-grade': {
+                    layer.confirm('确认要删除吗？', {
+                        btn: ['是','否'] //按钮
+                    }, function(index){
+                        $.ajax({
+                            url: "auth/grade.html?act=delete",
+                            data: "id="+data.id,
+                            method: "post",
+                            success: function (result) {
+                                if (result.status == 1) {
+                                    table.reload('grade-table', {});
+                                    layer.close(index);
+                                } else {
+                                    layer.msg(result.message)
+                                }
+                            }
+                        })
+                    })
+                }
+            }
+        });
+
+        function openEditWindow() {
+            layer.open({
+                type: 1,
+                content: $('#grade-edit-layer').html(),
+                title: '编辑年级'
+                , area: ['400px', '300px'],
+                btn: ['提交', '取消'] //可以无限个按钮
+                , success: function (layero, index) {
+                    form.render()
+                    form.val("grade-edit-form", data)
+                }
+                , yes: function (index, layero) {
+                    $.ajax({
+                        url: 'auth/grade.html?act=edit',
+                        data: $("#grade-edit-form").serialize(),
+                        method: 'post',
+                        success: function (result) {
+                            if (result.status) {
+                                table.reload('grade-table', {});
+                                layer.close(index);
+                            } else {
+                                alert(result.message)
+                            }
+                        }
+                    })
+                }
+            });
+        }
+
+    });
+
+</script>
+
+<script type="text/html" id="grade-edit-layer">
+    <form id="grade-edit-form" style="width: 80%;white-space:nowrap!important;" class="layui-form" lay-filter="grade-edit-form">
+        <input type="hidden" name="id">
+        <div class="layui-form-item">
+            <label class="layui-form-label">年级</label>
+            <div class="layui-input-block">
+                <input type="text" name="name" required lay-verify="required" placeholder="请输入角色名" autocomplete="off"
+                       class="layui-input">
+            </div>
+        </div>
+    </form>
+</script>

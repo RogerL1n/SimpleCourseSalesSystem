@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <div th:replace="common-css"></div>
+    <style type="text/css">
+        .navbar-banner {
+            margin-top: 50px;
+            background: url("static/img/homepage-bg.png");
+            background-size: cover;
+            backgtound-repeat: no-repeat;
+        }
+    </style>
+</head>
+<body>
+<div th:replace="common-top"></div>
+<div class="navbar-banner layout-no-margin-top">
+    <div class="banner-container">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-7">
+                    <a class="container-title" style="position:relative;top:-60px;">
+                        <img src="static/img/60291ebf10a78.png"/>
+                    </a>
+                    <div style="margin-top:-24px;">
+                        <a id="course-btn" class="course-btn btn btn-lg" href="courses/index.html">进入课程</a>
+                    </div>
+                </div>
+                <div class="col-md-5">
+                    <form action="register.html" method="post">
+                        <div class="form-group">
+                            <input class="form-control" name="name" type="text" placeholder="姓名">
+                            <div class="help-block text-left"></div>
+                        </div>
+                        <div class="form-group">
+                            <input class="form-control" name="mobile" type="text" placeholder="手机号">
+                            <div class="help-block text-left"></div>
+                        </div>
+                        <div class="form-group">
+                            <input class="form-control" name="code" type="text" placeholder="验证码">
+                            <div class="help-block text-left"></div>
+                        </div>
+                        <button class="btn register" type="submit">加入我们</button>
+                        <p class="tip">点击"加入我们"，表示您已经同意我们的<a href="privacy/index.html" target="_blank"> 隐私条款</a></P>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="introduce-container" id="fourFeatures">
+    <div class="container">
+        <div class="row">
+            <div class="introduce-unit col-sm-6 col-md-4">
+                <div><a class="introduce-img"><img src="static/img/introduceContainer2.gif"/></a></div>
+                <div><span class="introduce-span">在线学习，1秒启动</span></div>
+            </div>
+            <div class="introduce-unit col-sm-6 col-md-4">
+                <div><a class="introduce-img"><img src="static/img/introduceContainer3.gif"/></a></div>
+                <div><span class="introduce-span">每天一小时，保证学习进度</span></div>
+            </div>
+            <div class="introduce-unit col-sm-6 col-md-4">
+                <div><a class="introduce-img"><img src="static/img/introduceContainer4.gif"/></a></div>
+                <div><span class="introduce-span">有效学习时间，真实记录你的学习生涯</span></div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="line-and-laboratory">
+    <div class="container">
+        <div class="clearfix text-center item-header">
+            <span class="line"></span>
+            <span class="text-center item-title">课程分类</span>
+            <span class="line"></span>
+        </div>
+        <div class="tab-content">
+            <div class="tab-pane clearfix active" id="study-line">
+                <div class="col-xs-12 col-sm-6 col-md-4" th:each="grade:${gradeList}">
+                    <a href="course.html">
+                        <div class="path-item">
+                            <div class="col-xs-5 col-sm-4 path-img">
+                                <img src="static/img/6029228aa6dc3.png">
+                            </div>
+                            <div class="col-xs-7 col-sm-8">
+                                <div class="path-name" th:text="${grade.name+'课程'}"></div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="line-and-laboratory">
+    <div class="container">
+        <div class="clearfix text-center item-header">
+            <span class="line"></span>
+            <div class="text-center item-title">热门课程</div>
+            <span class="line"></span>
+        </div>
+        <div class="clearfix courses">
+            <div class="col-md-4 col-sm-6  course" th:each="course:${courseList}">
+                <a class="course-box" href="course.html">
+                    <div class="sign-box">
+                        <i class="fa fa-star-o course-follow pull-right"
+                           data-follow-url="/courses/1/follow"
+                           data-unfollow-url="/courses/1/unfollow" style="display:none"></i>
+                    </div>
+                    <div class="course-img">
+                        <img src="static/img/602923f18022b.png">
+                    </div>
+                    <div class="course-body">
+                        <span class="course-title" data-toggle="tooltip" data-placement="bottom" th:text="${course.name}"></span>
+                    </div>
+                    <div class="course-footer">
+                        <span class="course-per-num pull-left">
+                            <i class="fa fa-users"></i>剩余<span th:text="${course.surplus}"></span>
+                        </span>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div class="clearfix item-footer">
+            <div class="pull-right watch-all">
+                <a href="courses/index.html">查看更多 ></a>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:replace="common-footer"></div>
+</body>
+</html>

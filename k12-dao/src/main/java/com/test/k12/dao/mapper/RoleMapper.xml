@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.test.k12.dao.RoleDAO">
+
+    <insert id="addRole" parameterType="Role" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO ROLE (NAME, REMARK, STATUS) VALUES (#{name}, #{remark}, 1)
+    </insert>
+
+    <update id="updateRole" parameterType="Role">
+        update ROLE
+        <set>
+            <if test="status!=null">STATUS=#{status},</if>
+            <if test="name!=null and name!=''">NAME=#{name},</if>
+            <if test="remark!=null and remark!=''">REMARK=#{remark},</if>
+        </set>
+        where id=#{id}
+    </update>
+
+    <select id="getRoleList" parameterType="Role" resultType="Role">
+        select ID,NAME,STATUS,REMARK from ROLE
+        <where>
+            <if test="name!=null and name!=''">NAME=#{name}</if>
+            <if test="status!=null">and STATUS=#{status}</if>
+        </where>
+    </select>
+
+    <select id="getRoleById" resultType="Role">
+        SELECT
+            ID,
+            NAME,
+            STATUS,
+            REMARK
+        FROM ROLE
+        WHERE ID = #{id}
+    </select>
+
+    <insert id="addRoleMenu">
+        INSERT INTO role_menu (ROLE_ID, MENU_ID) VALUES (
+            #{roleId}, #{menuId}
+        )
+    </insert>
+
+    <delete id="deleteRoleMenu">
+        DELETE FROM role_menu
+        WHERE ROLE_ID = #{roleId}
+    </delete>
+
+    <select id="getRoleMenuIds" resultType="int">
+        SELECT MENU_ID
+        FROM role_menu
+        WHERE ROLE_ID = #{roleId}
+    </select>
+</mapper>
+    

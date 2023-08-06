@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.test.k12.dao.AdminUserDAO">
+
+    <resultMap id="userMap" type="AdminUser">
+        <id property="id" column="ID"/>
+        <result property="status" column="STATUS"/>
+        <result property="realName" column="REAL_NAME"/>
+        <result property="email" column="EMAIL"/>
+        <result property="password" column="PASSWORD"/>
+    </resultMap>
+
+    <sql id="select-user">
+        SELECT
+            ID,
+            EMAIL,
+            REAL_NAME,
+            STATUS
+        FROM ADMIN_USER
+    </sql>
+
+    <select id="getUserList" parameterType="AdminUser" resultMap="userMap">
+        <include refid="select-user"/>
+        <where>
+            <if test="status!=null">STATUS=#{status}</if>
+            <if test="email!=null and email!=''">and EMAIL like concat('%',#{email},'%')</if>
+            <if test="realName!=null and realName!=''">and REAL_NAME=#{realName}</if>
+        </where>
+    </select>
+
+    <select id="getUserByEmail" parameterType="String" resultMap="userMap">
+        SELECT
+            ID,
+            PASSWORD,
+            EMAIL,
+            REAL_NAME,
+            STATUS
+        FROM ADMIN_USER
+        WHERE EMAIL = #{email}
+    </select>
+
+    <insert id="addAdminUser">
+        INSERT INTO ADMIN_USER (PASSWORD, EMAIL, REAL_NAME, STATUS)
+        VALUES (#{password}, #{email}, #{realName}, #{status})
+    </insert>
+
+    <update id="updateAdminUser">
+        update ADMIN_USER
+        <set>
+            <if test="status!=null">STATUS=#{status},</if>
+            <if test="realName!=null and realName!=''">REAL_NAME=#{realName},</if>
+            <if test="password!=null and password!=''">PASSWORD=#{password}</if>
+        </set>
+        where ID=#{id}
+    </update>
+
+    <select id="getUserById" resultMap="userMap">
+        <include refid="select-user"/>
+        where ID=#{id}
+    </select>
+
+    <select id="getUserRoleIds" parameterType="int" resultType="int">
+        SELECT ROLE_ID
+        FROM USER_ROLE
+        WHERE USER_ID = #{userId}
+    </select>
+
+    <delete id="deleteUserRole" parameterType="int">
+        DELETE FROM USER_ROLE
+        WHERE USER_ID = #{userId}
+    </delete>
+
+    <insert id="addUserRole">
+        INSERT INTO USER_ROLE (ROLE_ID, USER_ID) VALUES (#{roleId}, #{userId})
+    </insert>
+</mapper>
+    

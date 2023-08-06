@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.test.k12.dao.GradeDAO">
+    <select id="getGradeList" resultType="Grade">
+        SELECT
+            ID,
+            NAME
+        FROM grade
+    </select>
+
+    <select id="getGradeById" resultType="Grade">
+        SELECT
+            ID,
+            NAME
+        FROM grade
+        where id=#{id}
+    </select>
+
+    <insert id="addGrade" parameterType="Grade" useGeneratedKeys="true" keyProperty="id">
+        insert into grade(NAME) VALUES (#{name})
+    </insert>
+
+    <update id="updateGrade" parameterType="Grade">
+        update Grade set NAME=#{name} where ID=#{id}
+    </update>
+
+    <delete id="deleteGrade" parameterType="int">
+        delete from grade where id=#{id}
+    </delete>
+</mapper>
+    

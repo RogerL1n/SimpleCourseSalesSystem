@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.test.k12.dao.TeacherDAO">
+    <select id="getTeacherList" resultType="Teacher">
+        SELECT
+            ID,
+            NAME
+        FROM teacher
+    </select>
+
+    <select id="getTeacherById" resultType="Teacher">
+        SELECT
+            ID,
+            NAME
+        FROM teacher
+        where id=#{id}
+    </select>
+
+    <insert id="addTeacher" parameterType="Teacher" useGeneratedKeys="true" keyProperty="id">
+        insert into teacher(NAME) VALUES (#{name})
+    </insert>
+
+    <update id="updateTeacher" parameterType="Teacher">
+        update Teacher set NAME=#{name} where ID=#{id}
+    </update>
+
+</mapper>
+    

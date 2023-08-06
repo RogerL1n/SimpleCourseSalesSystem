@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.test.k12.dao.SubjectDAO">
+    <select id="getSubjectList" resultType="Subject">
+        SELECT
+            ID,
+            NAME
+        FROM subject
+    </select>
+
+    <select id="getSubjectById" resultType="Subject">
+        SELECT
+            ID,
+            NAME
+        FROM subject
+        where id=#{id}
+    </select>
+
+    <insert id="addSubject" parameterType="Subject" useGeneratedKeys="true" keyProperty="id">
+        insert into subject(NAME) VALUES (#{name})
+    </insert>
+
+    <update id="updateSubject" parameterType="Subject">
+        update Subject set NAME=#{name} where ID=#{id}
+    </update>
+
+    <delete id="deleteSubject" parameterType="int">
+        delete from subject where id=#{id}
+    </delete>
+</mapper>
+    

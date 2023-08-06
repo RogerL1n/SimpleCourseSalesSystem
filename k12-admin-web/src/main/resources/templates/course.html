@@ -1,0 +1,230 @@
+<form action="#" class="layui-form">
+    <div class="layui-form-item">
+        名称:
+        <div class="layui-inline">
+            <input type="text" name="name" autocomplete="off" placeholder="请输入名称"
+                   class="layui-input">
+        </div>
+
+        年级:
+        <div class="layui-inline">
+            <select name="gradeId">
+                <option value="">请选择</option>
+                <option th:each="grade:${gradeList}" th:value="${grade.id}" th:text="${grade.name}"></option>
+            </select>
+        </div>
+        课程:
+        <div class="layui-inline">
+            <select name="subjectId">
+                <option value="">请选择</option>
+                <option th:each="subject:${subjectList}" th:value="${subject.id}"
+                        th:text="${subject.name}"></option>
+            </select>
+        </div>
+        <div class="layui-inline">
+            <button class="layui-btn" lay-submit lay-filter="course-search">搜索</button>
+        </div>
+    </div>
+    </div>
+</form>
+<table class="layui-table" lay-filter="course-table" id="course-table">
+</table>
+
+<script type="text/html" id="course-head-bar">
+<div class="layui-btn-container">
+    <button class="layui-btn layui-btn-sm" lay-event="goEdit"><i class="layui-icon">&#xe654;</i>添加</button>
+</div>
+</script>
+<script type="text/html" id="course-course-bar">
+<a class="layui-btn layui-btn-xs" lay-event="edit-course">编辑</a>
+</script>
+<script type="text/html" id="course-status">
+<input type="checkbox" id="status" name="status" value="{{d.id}}" lay-skin="switch" lay-text="起售|停售"
+       lay-filter="status-filter" {{ d.status== 1 ? 'checked' : '' }}>
+</script>
+<script type="text/javascript" th:inline="none">
+layui.use(['table', 'layer', 'form'], function () {
+    var table = layui.table;
+    var layer = layui.layer;
+    var form = layui.form;
+    form.render();
+    table.render({
+        id: "course-table",
+        elem: '#course-table'
+        , toolbar: '#course-head-bar'
+        , cellMinWidth: 80
+        , url: 'auth/course.html?act=table' //数据接口
+        , page: true //开启分页
+        , cols: [[
+            {field: 'id', title: 'ID', sort: true, fixed: 'left'}
+            , {field: 'name', title: '课程'}
+            , {field: 'teacherName', title: '授课'}
+            , {field: 'price', title: '价格'}
+            , {field: 'gradeName', title: '年级'}
+            , {field: 'subjectName', title: '学科'}
+            , {field: 'expiration', title: '有效期'}
+            , {field: 'surplus', title: '剩余名额'}
+            , {field: 'status', title: '状态', templet: '#course-status'}
+            , {fixed: 'right', title: '操作', toolbar: '#course-course-bar'}
+        ]]
+    });
+    form.on('submit(course-search)', function (data) {
+        table.reload('course-table', {
+            page: {
+                curr: 1 //重新从第 1 页开始
+            },
+            where: data.field
+        });
+        return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+    });
+    form.on('switch(status-filter)', function (obj) {
+        var status = obj.elem.checked;
+        $.ajax({
+            url: "auth/course.html?act=edit",
+            data: "id=" + this.value + "&status=" + (status ? 1 : 0),
+            method: "post",
+            success: function (result) {
+                if (result.status) {
+                    table.reload('course-table', {});
+                    layer.close(index);
+                } else {
+                    layer.msg(result.message)
+                }
+            }
+        })
+        return;
+    });
+
+    var kingEditorParams = {
+        filePostName: "file",//指定上传文件参数名称
+        uploadJson: 'upload.html',//指定上传文件请求的url。
+        dir: "image"//上传类型，分别为image、flash、media、file
+    }
+//头工具栏事件
+    table.on('toolbar(course-table)', function (obj) {
+        switch (obj.event) {
+            case 'goEdit':
+                openEditWindow();
+                break;
+        }
+    });
+    //监听行工具事件
+    table.on('tool(course-table)', function (obj) {
+        var data = obj.data;
+        switch (obj.event) {
+            case 'edit-course': {
+                layui.use('form', function () {
+                    openEditWindow(data);
+                })
+                break;
+            }
+        }
+    });
+
+    function openEditWindow(data) {
+        layer.open({
+            type: 1,
+            content: $('#course-edit-layer').html(),
+            title: '编辑课程'
+            , zIndex: 1000
+            , area: ['800px', '600px']
+            , success: function (layero, index) {
+                form.render()
+                form.val("course-edit-form", data)
+                form.on('select(grade)', function (data) {
+                    form.val("course-edit-form", {"gradeName": $(data.elem).find("option:selected").text()})
+                });
+                form.on('select(subject)', function (data) {
+                    form.val("course-edit-form", {"subjectName": $(data.elem).find("option:selected").text()})
+                });
+                form.on('select(teacher)', function (data) {
+                    form.val("course-edit-form", {"teacherName": $(data.elem).find("option:selected").text()})
+                });
+                editor = KindEditor.create($("#editor"), kingEditorParams);
+            } , btn: ['提交', '取消'] //可以无限个按钮
+            , yes: function (index, layero) {
+                editor.sync();
+                $.ajax({
+                    url: 'auth/course.html?act=edit',
+                    data: $("#course-edit-form").serialize(),
+                    method: 'post',
+                    success: function (result) {
+                        if (result.status) {
+                            table.reload('course-table', {});
+                            layer.close(index);
+                        } else {
+                            layer.msg(result.message)
+                        }
+                    }
+                })
+            }
+        })
+    }
+})
+</script>
+
+<script type="text/html" id="course-edit-layer">
+<form id="course-edit-form" style="width: 80%;white-space:nowrap!important;" class="layui-form"
+      lay-filter="course-edit-form">
+    <input type="hidden" name="id">
+    <input type="hidden" name="gradeName">
+    <input type="hidden" name="subjectName">
+    <input type="hidden" name="teacherName">
+    <div class="layui-form-item">
+        <label class="layui-form-label">课程</label>
+        <div class="layui-input-inline" style="width:480px;">
+            <input type="text" name="name" required lay-verify="required" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">售价</label>
+            <div class="layui-input-inline" style="width: 100px;">
+                <input type="text" name="price" required lay-verify="required" autocomplete="off" class="layui-input">
+            </div>
+            <label class="layui-form-label">有效期</label>
+            <div class="layui-input-inline" style="width: 100px;">
+                <input type="text" name="expiration" required lay-verify="required" autocomplete="off"
+                       class="layui-input">
+            </div>
+            <label class="layui-form-label">剩余名额</label>
+            <div class="layui-input-inline" style="width: 100px;">
+                <input type="text" name="surplus" required lay-verify="required" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">年级</label>
+            <div class="layui-input-inline" style="width: 100px;">
+                <select name="gradeId" lay-filter="grade">
+                    <option value="">请选择</option>
+                    <option th:each="grade:${gradeList}" th:value="${grade.id}" th:text="${grade.name}"></option>
+                </select>
+            </div>
+            <label class="layui-form-label">学科</label>
+            <div class="layui-input-inline" style="width: 100px;">
+                <select name="subjectId" lay-filter="subject">
+                    <option value="">请选择</option>
+                    <option th:each="subject:${subjectList}" th:value="${subject.id}"
+                            th:text="${subject.name}"></option>
+                </select>
+            </div>
+            <label class="layui-form-label">老师</label>
+            <div class="layui-input-inline" style="width: 100px;">
+                <select name="teacherId" lay-filter="teacher">
+                    <option value="">请选择</option>
+                    <option th:each="teacher:${teacherList}" th:value="${teacher.id}"
+                            th:text="${teacher.name}"></option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">课程简介</label>
+        <div class="layui-input-inline">
+            <textarea style="height:300px;" name="introduction" id="editor"></textarea>
+        </div>
+    </div>
+</form>
+</script>

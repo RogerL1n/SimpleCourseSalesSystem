@@ -1,0 +1,8 @@
+CREATE TABLE k12_demo.user_role
+(
+    USER_ID int(11) NOT NULL,
+    ROLE_ID int(11) NOT NULL,
+    CONSTRAINT `PRIMARY` PRIMARY KEY (USER_ID, ROLE_ID)
+);
+INSERT INTO k12_demo.user_role (USER_ID, ROLE_ID) VALUES (1, 1);
+INSERT INTO k12_demo.user_role (USER_ID, ROLE_ID) VALUES (2, 2);

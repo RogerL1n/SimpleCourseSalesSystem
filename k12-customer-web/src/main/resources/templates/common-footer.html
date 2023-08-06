@@ -1,0 +1,174 @@
+<div class="modal fade" id="flash-message" tabindex="-1" role="dialog">
+    <div class="modal-dialog" rolw="document">
+    </div>
+</div>
+<div class="modal fade" id="sign-modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <button type="button" class="close-modal" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+            </button>
+            <div class="modal-body">
+                <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" class="active">
+                        <a href="#signin-form" aria-controls="signin-form" role="tab" data-toggle="tab">登录</a>
+                    </li>
+                    <li role="presentation">
+                        <a href="#signup-form" aria-controls="signup-form" role="tab" data-toggle="tab">注册</a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <div role="tabpanel" class="tab-pane active" id="signin-form">
+                        <form action="/login" method="post">
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-envelope" style="margin:0;"></i>
+                                    </div>
+                                    <input type="email" name="login" class="form-control" placeholder="请输入邮箱">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-lock" style="margin:0;"></i>
+                                    </div>
+                                    <input type="password" name="password" class="form-control" placeholder="请输入密码">
+                                </div>
+                            </div>
+                            <div class="form-inline verify-code-item" style="display:none;">
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <input type="text" name="captcha_v" class="form-control" placeholder="请输入验证码">
+                                    </div>
+                                </div>
+                                <img class="verify-code" src="" source="img/captcha.gif">
+                            </div>
+                            <div class="form-group remember-login">
+                                <input name="remember" type="checkbox" value="y"> 下次自动登录
+                                <a class="pull-right" href="reset_password/index.html">忘记密码？</a>
+                            </div>
+                            <div class="form-group">
+                                <input class="btn btn-primary" name="submit" type="submit" value="进入课堂">
+                            </div>
+                            <div class="form-group widget-signin">
+                                <span>快速登录</span>
+                                <a href="/auth/qq?next="><i class="fa fa-qq"></i></a>
+                                <a href="/auth/weibo?next="><i class="fa fa-weibo"></i></a>
+                                <a href="/auth/weixin?next="><i class="fa fa-weixin"></i></a>
+                                <a href="/auth/github?next="><i class="fa fa-github"></i></a>
+                                <a href="/auth/renren?next="><i class="fa fa-renren"></i></a>
+                            </div>
+                            <div class="form-group error-msg">
+                                <div class="alert alert-danger" role="alert"></div>
+                            </div>
+                        </form>
+                    </div>
+                    <div role="tabpanel" class="tab-pane" id="signup-form">
+                        <form action="/register" method="post">
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-envelope" style="margin:0;"></i>
+                                    </div>
+                                    <input type="email" name="email" class="form-control" placeholder="请输入邮箱">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-lock" style="margin:0;"></i>
+                                    </div>
+                                    <input type="password" name="password" class="form-control" placeholder="请输入密码">
+                                </div>
+                            </div>
+                            <div class="form-inline">
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <input type="text" name="captcha_v" class="form-control" placeholder="请输入验证码">
+                                    </div>
+                                </div>
+                                <img class="verify-code" src="" source="img/captcha.gif">
+                            </div>
+                            <div class="form-group">
+                                <input class="btn btn-primary" name="submit" type="submit" value="注册">
+                            </div>
+                            <div class="form-group agree-privacy">
+                                注册表示您已经同意我们的<a href="privacy/index.html" target="_blank">隐私条款</a>
+                            </div>
+                            <div class="form-group widget-signup">
+                                <span>快速注册</span>
+                                <a href="/auth/qq?next="><i class="fa fa-qq"></i></a>
+                                <a href="/auth/weibo?next="><i class="fa fa-weibo"></i></a>
+                                <a href="/auth/weixin?next="><i class="fa fa-weixin"></i></a>
+                                <a href="/auth/github?next="><i class="fa fa-github"></i></a>
+                                <a href="/auth/renren?next="><i class="fa fa-renren"></i></a>
+                            </div>
+                            <div class="form-group error-msg">
+                                <div class="alert alert-danger" role="alert"></div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="base-data"
+     data-flash="false"
+     data-is-login=false
+     data-is-jwt=true
+     data-socket-url="wss://comet.xxxxxx.com"
+     data-msg-user=""
+     data-msg-system=""
+></div>
+<script src="static/app/dest/lib/lib.js?=2016121272249"></script>
+<script src="static/static/jquery/2.2.4/jquery.min.js"></script>
+<script src="static/static/bootstrap-tour/0.11.0/js/bootstrap-tour.min.js"></script>
+<script src="static/static/bootstrap-table/1.11.0/bootstrap-table.min.js"></script>
+<script src="static/static/bootstrap-table/1.11.0/locale/bootstrap-table-zh-CN.min.js"></script>
+<script src="static/static/bootstrap-table/1.11.0/extensions/filter-control/bootstrap-table-filter-control.min.js"></script>
+
+<div id="jinja-data"></div>
+<script src="static/app/dest/frontend/index.js?=2016121272249"></script>
+<div class="footer">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 clearfix footer-col">
+                <img src="static/img/6029234dcdac2.png" style="width: 240px;margin: 0 auto">
+            </div>
+            <div class="col-xs-6 col-sm-3 col-md-2 footer-col">
+                <div class="col-title">公司</div>
+                <a href="privacy/index.html" target="_blank">关于我们</a><br>
+                <a href="privacy/index.html" target="_blank">联系我们</a><br>
+                <a href="#" target="_blank">加入我们</a><br>
+                <a href="#" target="_blank">技术博客</a><br>
+            </div>
+            <div class="col-xs-6 col-sm-3 col-md-2 footer-col">
+                <div class="col-title">合作</div>
+                <a href="privacy/index.html" target="_blank">我要投稿</a><br>
+                <a href="labs/index.html" target="_blank">教师合作</a><br>
+                <a href="edu/index.html" target="_blank">高校合作</a><br>
+                <a href="privacy/index.html" target="_blank">友情链接</a>
+            </div>
+            <div class="col-xs-6 col-sm-3 col-md-2 footer-col">
+                <div class="col-title">服务</div>
+                <a href="vip/index.html" target="_blank">会员服务</a><br>
+                <a href="courses/reports.html" target="_blank">帮助中心</a><br>
+                <a href="questions/index.html?" target="_blank">常见问题</a><br>
+                <a href="privacy/index.html" target="_blank">隐私条款</a>
+            </div>
+            <div class="col-xs-6 col-sm-3 col-md-2 footer-col">
+                <div class="col-title">学习中心</div>
+                <a href="paths/index.html" target="_blank">学前课程</a><br>
+                <a href="paths/index.html" target="_blank">小学课程</a><br>
+                <a href="paths/index.html" target="_blank">初中课程</a><br>
+                <a href="paths/index.html" target="_blank">高中课程</a><br>
+            </div>
+        </div>
+    </div>
+    <div class="text-center copyright">
+        <span>Copyright @2013-2016 在线教育</span>
+        <span class="ver-line"> | </span>
+        <a href="#" target="_blank">蜀ICP备00000000号</a>
+    </div>
+</div>

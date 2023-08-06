@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="Lei Shi">
+    <meta http-equiv="Cache-Control" content="o-transform">
+    <meta http-equiv="Cache-Control" content="no-siteapp">
+    <meta name="csrf-token" content="1483780974##87f89328c5616669f00302a263fe9061bb852818">
+    <title>新手入门 - 学习路径 - 实验楼</title>
+    <div th:replace="common-css"></div>
+</head>
+<body>
+<div th:replace="common-top"></div>
+<div class="container layout layout-margin-top">
+
+    <ol class="breadcrumb">
+        <li><a href="/paths/">学习路径</a></li>
+        <li class="active"><a href="/paths/newhand">新手入门</a></li>
+    </ol>
+
+    <div class="row">
+        <div class="col-md-9 layout-body">
+
+            <div class="content" style="padding:0px">
+                <div class="path-description" style="margin:0px">
+                    <div class="path-desc-top clearfix"
+                         style="background: url('../static/img/1471513740139.png') no-repeat;background-size: cover;">
+                        <div class="name-total-box clearfix">
+                            <div class="col-md-6 col-sm-6 col-md-offset-1 path-name">
+                                <h4 th:text="${course.name}"></h4>
+                            </div>
+                            <div class="col-md-3 col-sm-6 col-md-offset-1 path-total-courses">
+                                <span class="total-courses-box">￥ <span class="num" th:text="${course.price}"></span></span>
+                            </div>
+                        </div>
+                        <div class="col-md-10 col-md-offset-1 path-desc-text" th:text="${course.gradeName+'-'+course.subjectName}"></div>
+                    </div>
+                    <div class="path-desc-btm">
+                        <div class="col-sm-12 col-md-4 clearfix learn-time-div">
+                            <div class="col-md-12 text-left need-learn-time">剩余 <span class="num" th:text="${course.surplus}"></span> 名额</div>
+                        </div>
+                        <div class="col-sm-12 col-md-8  clearfix text-right" style="padding-top:0px">
+                            <div class="col-xs-12">
+
+                                <a class="btn btn-path-operation btn-join-path" data-sign="signin" href="#sign-modal"
+                                   data-toggle="modal">加入学习</a>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="content">
+                <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" class="active">
+                        <a href="#path-details" aria-controls="path-details" role="tab" data-toggle="tab">课程详情</a>
+                    </li>
+                </ul>
+                <div class="tab-content" th:utext="${course.introduction}">
+                </div>
+            </div>
+
+        </div>
+        <div th:replace="common-right"></div>
+    </div>
+</div>
+<div th:replace="common-footer"></div>
+
+</body>
+</html>
